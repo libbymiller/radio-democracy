@@ -1,4 +1,6 @@
 require 'json'
+require 'cgi'
+
 class WebServer < Sinatra::Base
   register Sinatra::Async
   
@@ -16,5 +18,12 @@ class WebServer < Sinatra::Base
   aget '/panic' do
     @player.trigger_event :panic
     body "Panic!"
+  end
+
+  aget '/change' do
+    EM::Synchrony.next_tick do
+      @player.trigger_event :change_channel
+      body "Changing cahnnel" # note that inspecting at this point doesn't work
+    end
   end
 end

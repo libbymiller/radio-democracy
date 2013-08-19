@@ -14,10 +14,16 @@ class ChangeChannel
   end
 
   def change_channel!
-
     EM.defer \
       proc {
-        url = @filename
+        channels = []
+        items = File.readlines(@filename)
+        items.each do |item|
+          channels.push(item.split(" ")[8])
+        end
+        url = channels.sample
+
+        puts "url is #{url}"
         logger.debug "changing to #{url}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: url, volume: @player.playlist.volume)
         @player.playlist = playlist
