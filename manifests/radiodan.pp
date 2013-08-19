@@ -50,6 +50,7 @@ file { '/etc/mpd.conf':
     bind_to_address    "localhost"
     port               "6600"
     auto_update        "yes"
+    log_level          "verbose"
 
     audio_output {
             type            "alsa"
