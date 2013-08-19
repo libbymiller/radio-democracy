@@ -27,9 +27,9 @@ class ChangeChannel
         logger.debug "changing to #{url}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: url, volume: @player.playlist.volume)
         @player.playlist = playlist
-        @player.trigger_event(:channel_changed)
       },
       proc {
+#        @player.trigger_event(:channel_changed)
       }
 
   end

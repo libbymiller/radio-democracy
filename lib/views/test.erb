@@ -1,0 +1,16 @@
+<html>
+<script type="text/javascript" src="faye-browser.js"></script>
+<script type="text/javascript">
+    var client = new Faye.Client('http://'+window.location.host+'/faye',{timeout: 120});
+    var subscription = client.subscribe('/foo', function(message) {
+      console.log(message);
+      document.getElementById("foo").innerHTML = message;
+    });
+</script>
+
+<body>
+hello
+<div id="foo">
+</div>
+</body>
+</html>
