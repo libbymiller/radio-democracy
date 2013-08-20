@@ -21,10 +21,9 @@ items.each do |item|
   channels.push(item.split(" ")[8])
 end
 
-channel = Radiodan::Playlist.new tracks: channels.sample
+channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
 
 EM.synchrony do
-  radios = Radiodan::Playlist.new(tracks: (channel))
 
   radio = Radiodan.new do |builder|
     builder.log      STDOUT
