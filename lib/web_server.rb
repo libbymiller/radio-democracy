@@ -1,8 +1,7 @@
 require 'json'
 require 'cgi'
 require 'faye'
-require 'pp'
-require "rest-client"
+require 'rest-client'
 
 $:<< './lib'
 require 'local_config'
@@ -20,21 +19,18 @@ class WebServer < Sinatra::Base
     client = Faye::Client.new("http://localhost:3000/faye")
 
     @player.register_event :playlist_changed do |pl|
-      puts "playlist changed!!!!!!!!!!!!"
-      p pl
+      puts "playlist changed!"
       item = pl.tracks[0].file
       items = {}
       file_changed = false
       File.readlines(File.join(root, 'items')).each do |line|
         arr = line.split(" ")
-        pp arr
         name = arr[0] 
         listened = arr[1]
         listened = listened ? listened.chomp.to_i : 0
         if(name && name!="")
           if(item == name)
             listened = listened + 1
-            puts "name is ..#{name},, listened is #{listened}"
             file_changed = true
           end
           items[name] = listened

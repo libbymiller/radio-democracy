@@ -30,7 +30,6 @@ class BestNewChannel
       proc {
         config = LocalConfig.new
         url = config.url_base.url
-#        url = "http://dev.notu.be/2013/08/radio-democracy/"
         req = RestClient.get(url)
         candidates = {}
         req.body.split("\n").each do |item|
@@ -43,16 +42,11 @@ class BestNewChannel
         end
         candidates = candidates.sort_by {|_key, value| value}.reverse
 
-        puts "====candidates======"
-        pp candidates
 
         listenables = []
         candidates.each do |c|
           listenables.push(c[0])
         end
-        puts "====listenables======"
-
-        pp listenables
 
         local_candidates = {}
         File.readlines(@filename).each do |item|
@@ -68,27 +62,10 @@ class BestNewChannel
           channels.push(c[0])
         end
 
-=begin
-        items = File.readlines(@filename)
-        items.each do |item|
-          arr = item.split(" ")
-          name = arr[0]          
-          views = arr[1]          
-          if(!views || views && views.to_i==0)
-            channels.push(name)
-          end
-        end
-
-=end
-        puts "====channels======"
-        pp channels
-
-        urls = listenables & channels
-        puts "====urls======"
+        urls = channels & listenables
         pp urls
 
-        puts "url is #{urls[0]}"
-        logger.debug "changing to #{url}, #{@player.playlist.volume}..."
+        logger.debug "changing to #{urls[0]}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: urls[0], volume: @player.playlist.volume)
         @player.playlist = playlist
       },
@@ -98,5 +75,3 @@ class BestNewChannel
   end
 end
 
-#b = BestNewChannel::new({:filename=>"../items"})
-#pp b.best_new_channel!

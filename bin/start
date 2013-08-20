@@ -4,6 +4,7 @@ require 'bundler/setup'
 require 'radiodan'
 require 'sinatra/async'
 require 'thin'
+require 'pp'
 
 $:<< './lib'
 require "radiodan/playlist"
@@ -11,22 +12,62 @@ require 'random_channel'
 require 'best_new_channel'
 require 'web_server'
 
+require 'local_config'
+require "rest-client"
+
 root = File.join(File.dirname(__FILE__), '..')
 
 vol = 70
 
+# download the list of files
 
 channels = []
 
-File.readlines(File.join(root, 'items')).each do |item|
-  name = item.split(" ")[0]
-  if(name)
-    channels.push(name)
-  end
-end
+if(File.exists?(File.join(root, 'items')))
+  puts "Got a starting file"
 
-require 'pp'
-pp channels
+  items = File.readlines(File.join(root, 'items'))
+  items.each do |item|
+     channels.push(item.split(" ")[0])
+  end
+  url = channels.sample
+
+else
+  puts "No starting file - downloading one"
+
+  config = LocalConfig.new
+  url = config.url_base.url
+  req = RestClient.get(url)
+
+  to_download = {}
+  req.body.split("\n").each do |line|
+    line = line.chomp
+    arr = line.split(" ")
+    to_download[arr[0]]=arr[1] 
+  end
+
+  pp to_download
+
+  items_string = ""
+
+# download the files themselves
+  to_download.each do |file_name, file|
+    req = RestClient.get(file)
+    File.open(File.join(root, 'podcasts', file_name ), 'wb') {|f| f.write(req.body) }
+    channels.push(file_name)
+    items_string << file_name
+    items_string << "\n"
+    sleep 1
+  end
+
+  File.open(File.join(root, 'items'), 'w') {|f| f.write(items_string) }
+
+  puts "updating mpc with new files"
+
+  `mpc update`
+
+
+end
 
 channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
 

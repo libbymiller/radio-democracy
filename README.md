@@ -26,7 +26,7 @@ When a program ends, the radio also switches to that highest-score program.
 - Install the dependencies for the app `$ bundle install`
 - Start the radio application `$ bin/start`
 
-After a few moments the radio should start playing (it downloads some files first). 
+After a few moments the radio should start playing (it downloads some files first from the BBC podcasts site: http://www.bbc.co.uk/podcasts). 
 
 ## Commands:
 
