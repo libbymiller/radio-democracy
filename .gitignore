@@ -5,4 +5,5 @@ db/*.sqlite3
 .DS_Store
 podcasts/*
 playlists/*
-items
+items*
+config/config.yml

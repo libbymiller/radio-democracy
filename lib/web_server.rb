@@ -2,19 +2,25 @@ require 'json'
 require 'cgi'
 require 'faye'
 require 'pp'
+require "rest-client"
+
+$:<< './lib'
+require 'local_config'
 
 class WebServer < Sinatra::Base
   register Sinatra::Async
 
   use Faye::RackAdapter, :mount => '/faye', :timeout => 25
 
+  RestClient.proxy = ENV['HTTP_PROXY']
+
   def initialize(player, root)
     @player = player
     Faye::WebSocket.load_adapter('thin')
     client = Faye::Client.new("http://localhost:3000/faye")
 
-    @player.register_event :oh_ffs do |pl|
-      puts "playlist changed"
+    @player.register_event :playlist_changed do |pl|
+      puts "playlist changed!!!!!!!!!!!!"
       p pl
       item = pl.tracks[0].file
       items = {}
@@ -56,20 +62,46 @@ class WebServer < Sinatra::Base
     end
   end
 
-  aget '/panic' do
-    @player.trigger_event :panic
-    body "Panic!"
-  end
-
-  aget '/change' do
+  apost '/try' do
     EM::Synchrony.next_tick do
-      @player.trigger_event :change_channel
-      body "Changing channel" # note that inspecting at this point doesn't work
+      @player.trigger_event :random_channel
+      body "Random channel" # note that inspecting at this point doesn't work
     end
   end
 
-  get '/test' do
-    erb :test
+  apost '/up' do
+    EM::Synchrony.next_tick do
+      config = LocalConfig.new
+      url_base = config.url_base.url    
+      url = "#{url_base}/up/"
+      req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
+      status req.code
+      if(req.code==201)
+        body {"OK"}      
+      else
+        body {"NOK"}
+      end
+    end
+  end
+
+  apost '/down' do
+    EM::Synchrony.next_tick do
+      config = LocalConfig.new
+      url_base = config.url_base.url    
+      url = "#{url_base}/down/"
+      req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
+
+      @player.trigger_event :best_new_channel
+
+      status req.code
+      if(req.code==201)
+        body {"OK"}      
+      else
+        body {"NOK"}
+      end
+    end
   end
 
 end
+
+
