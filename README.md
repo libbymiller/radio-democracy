@@ -24,6 +24,7 @@ When a program ends, the radio also switches to that highest-score program.
 - Shell into the virtual machine `$ vagrant ssh`
 - Change to the application directory, mounted as `$ cd /vagrant`
 - Install the dependencies for the app `$ bundle install`
+- cp config/config.yml.example config/config.yml
 - Start the radio application `$ bin/start`
 
 After a few moments the radio should start playing (it downloads some files first from the BBC podcasts site: http://www.bbc.co.uk/podcasts). 
