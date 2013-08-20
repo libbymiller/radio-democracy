@@ -7,7 +7,7 @@ require 'thin'
 
 $:<< './lib'
 require "radiodan/playlist"
-require 'change_channel'
+require 'random_channel'
 require 'web_server'
 
 root = File.join(File.dirname(__FILE__), '..')
@@ -16,10 +16,15 @@ vol = 70
 
 channels = []
 
-items = File.readlines(File.join(root, 'items'))
-items.each do |item|
-  channels.push(item.split(" ")[8])
+File.readlines(File.join(root, 'items')).each do |item|
+  name = item.split(" ")[0]
+  if(name)
+    channels.push(name)
+  end
 end
+
+require 'pp'
+pp channels
 
 channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
 
@@ -29,10 +34,10 @@ EM.synchrony do
     builder.log      STDOUT
     builder.adapter  :MPD, :host => 'localhost', :port => 6600
     builder.playlist channel
-    builder.use      :change_channel, :filename => "#{root}/items"
+    builder.use      :random_channel, :filename => "#{root}/items"
   end
 
   radio.start
 
-  Thin::Server.start WebServer.new(radio.player), '0.0.0.0', 3000, :signals => false
+  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false
 end

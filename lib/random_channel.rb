@@ -1,4 +1,4 @@
-class ChangeChannel
+class RandomChannel
   include Radiodan::Logging
 
   def initialize(config)
@@ -8,12 +8,12 @@ class ChangeChannel
   def call(player)
     @player = player
 
-    @player.register_event :change_channel do
-      change_channel!
+    @player.register_event :random_channel do
+      random_channel!
     end
   end
 
-  def change_channel!
+  def random_channel!
     EM.defer \
       proc {
         channels = []
