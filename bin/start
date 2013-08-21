@@ -37,7 +37,7 @@ else
 
   config = LocalConfig.new
   url = config.url_base.url
-  req = RestClient.get(url)
+  req = RestClient.get("#{url}/download")
 
   to_download = {}
   req.body.split("\n").each do |line|
