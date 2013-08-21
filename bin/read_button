@@ -1,0 +1,110 @@
+#!/usr/bin/env ruby
+require 'wiringpi2'
+require 'pp'
+require 'rest-client'
+
+
+$:<< './lib'
+require 'local_config'
+
+class Button
+
+  INPUT = 0
+  INT_EDGE_RISING = 1
+  INT_EDGE_FALLING = 2
+  INT_EDGE_BOTH = 3
+  PUD_UP = 2
+  attr_accessor :pins, :value1, :value2, :value3
+
+  def initialize(pins, io)
+    puts "init #{pins}"
+    self.pins = pins
+    self.pins.each do |pin|
+      puts "pin is #{pin}"
+      io.pin_mode(pin,INPUT)
+      io.pullUpDnControl(pin, PUD_UP)
+      io.wiringpi_isr(pin, INT_EDGE_BOTH, update(io))
+      puts "ok"
+    end
+  end
+
+  def update(io)
+    self.value1 = io.digital_read(pins[0])
+    self.value2 = io.digital_read(pins[1])
+    self.value3 = io.digital_read(pins[2])
+
+#    self.pins.each do |pin|
+#      value = io.digital_read(pin)
+#      self.value = value
+#    end
+    return nil
+  end
+
+end
+
+pin1 = 0
+pin2 = 4
+pin3 = 5
+pins = [pin1, pin2, pin3]
+io = WiringPi::GPIO.new
+button = Button.new(pins,io)
+last_val1 = nil
+last_val2 = nil
+last_val3 = nil
+
+while (true)
+    button.update(io)
+    if(button.value1!=last_val1)
+      puts button.value1
+      last_val1 = button.value1
+      if(button.value1==0)
+           puts "RANDOM CHANNEL!"
+           config = LocalConfig.new
+           url = config.url_local.url
+           puts "#{url}try"
+           begin
+             req = RestClient.post("#{url}try", :a => "b")
+             pp req
+           rescue Exception=>e
+             pp e
+           end
+      end
+    end
+
+    if(button.value2!=last_val2)
+      puts button.value2
+      last_val2 = button.value2
+      if(button.value2==0)
+           puts "VOTE DOWN CHANNEL!"
+           config = LocalConfig.new
+           url = config.url_local.url
+           puts "#{url}down"
+           begin
+             req = RestClient.post("#{url}down", :a => "b")
+             pp req
+           rescue Exception=>e
+             pp e
+           end
+      end
+    end
+
+
+    if(button.value3!=last_val3)
+      puts button.value3
+      last_val3 = button.value3
+      if(button.value3==0)
+           puts "VOTE UP CHANNEL!"
+           config = LocalConfig.new
+           url = config.url_local.url
+           puts "#{url}down"
+           begin
+             req = RestClient.post("#{url}up", :a => "b")
+             pp req
+           rescue Exception=>e
+             pp e
+           end
+      end
+    end
+
+end
+

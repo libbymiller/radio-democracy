@@ -42,6 +42,7 @@ diskutil list
 # check the disk
 
 diskutil unmountDisk /dev/<disk2>
+
 sudo dd bs=1m if=~/Downloads/2013-05-25-wheezy-raspbian.img of=/dev/<disk2>
 
 do https://github.com/radiodan/cold_start
@@ -53,3 +54,16 @@ do
 sudo bin/start
 
 (else you get problems with mpd permissions)
+
+
+### for physical buttons
+
+git clone https://github.com/libbymiller/WiringPi2-Ruby.git
+cd WiringPi2-Ruby/
+gem build wiringpi.gemspec
+sudo gem install wiringpi2
+
+
+
+
+
