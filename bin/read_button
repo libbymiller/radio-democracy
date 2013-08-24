@@ -33,18 +33,16 @@ class Button
     self.value2 = io.digital_read(pins[1])
     self.value3 = io.digital_read(pins[2])
 
-#    self.pins.each do |pin|
-#      value = io.digital_read(pin)
-#      self.value = value
-#    end
     return nil
   end
 
 end
 
+
+# http://www.adafruit.com/blog/2013/02/01/raspberry-pi-gpio-resource-piday-raspberrypi-raspberry_pi/
 pin1 = 0
-pin2 = 4
-pin3 = 5
+pin2 = 2
+pin3 = 3
 pins = [pin1, pin2, pin3]
 io = WiringPi::GPIO.new
 button = Button.new(pins,io)
@@ -96,7 +94,7 @@ while (true)
            puts "VOTE UP CHANNEL!"
            config = LocalConfig.new
            url = config.url_local.url
-           puts "#{url}down"
+           puts "#{url}up"
            begin
              req = RestClient.post("#{url}up", :a => "b")
              pp req
