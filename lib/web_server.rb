@@ -52,20 +52,27 @@ class WebServer < Sinatra::Base
     super()
   end
 
-  aget '/' do
+  get '/' do
     EM::Synchrony.next_tick do
       body { "<h1>Radiodan</h1><p>#{CGI.escapeHTML(@player.state.inspect)}</p>" }
     end
   end
 
-  apost '/try' do
+  post '/try' do
     EM::Synchrony.next_tick do
       @player.trigger_event :random_channel
       body "Random channel" # note that inspecting at this point doesn't work
     end
   end
 
-  apost '/up' do
+  get '/try' do
+    EM::Synchrony.next_tick do
+      @player.trigger_event :random_channel
+      body "Random channel" # note that inspecting at this point doesn't work
+    end
+  end
+
+  post '/up' do
     EM::Synchrony.next_tick do
       config = LocalConfig.new
       url_base = config.url_base.url    
@@ -80,7 +87,40 @@ class WebServer < Sinatra::Base
     end
   end
 
-  apost '/down' do
+  get '/up' do
+    EM::Synchrony.next_tick do
+      config = LocalConfig.new
+      url_base = config.url_base.url    
+      url = "#{url_base}/up/"
+      req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
+      status req.code
+      if(req.code==201)
+        body {"OK"}      
+      else
+        body {"NOK"}
+      end
+    end
+  end
+
+  post '/down' do
+    EM::Synchrony.next_tick do
+      config = LocalConfig.new
+      url_base = config.url_base.url    
+      url = "#{url_base}/down/"
+      req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
+
+      @player.trigger_event :best_new_channel
+
+      status req.code
+      if(req.code==201)
+        body {"OK"}      
+      else
+        body {"NOK"}
+      end
+    end
+  end
+
+  get '/down' do
     EM::Synchrony.next_tick do
       config = LocalConfig.new
       url_base = config.url_base.url    

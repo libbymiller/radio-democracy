@@ -1,2 +1,4 @@
 url_base:
   url: "http://dev.notu.be/2013/08/radio-democracy/"
+url_local:
+  url: http://127.0.0.1:3000/
