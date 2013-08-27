@@ -16,3 +16,4 @@ end
 
 gem 'settingslogic'
 
+gem 'wiringpi2', :git => 'https://github.com/libbymiller/WiringPi2-Ruby.git' 

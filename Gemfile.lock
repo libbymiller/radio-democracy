@@ -1,4 +1,10 @@
 GIT
+  remote: https://github.com/libbymiller/WiringPi2-Ruby.git
+  revision: 94ea4b6cc6bbdc5a133c1678673c65c24d6a04d7
+  specs:
+    wiringpi2 (1.0.0)
+
+GIT
   remote: https://github.com/libbymiller/radiodan.git
   revision: f534e5d172d9dd63965af90dabbca1669fe7e912
   specs:
@@ -85,3 +91,4 @@ DEPENDENCIES
   settingslogic
   sinatra (~> 1.4.2)
   thin
+  wiringpi2!
