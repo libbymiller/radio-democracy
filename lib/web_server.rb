@@ -138,6 +138,10 @@ class WebServer < Sinatra::Base
     end
   end
 
+  get '/test' do
+    erb :test
+  end
+
 end
 
 
