@@ -34,7 +34,7 @@ Vagrant::Config.run do |config|
   # Share an additional folder to the guest VM. The first argument is
   # an identifier, the second is the path on the guest to mount the
   # folder, and the third is the path on the host to the actual folder.
-  config.vm.share_folder "music", "/music", "~/Music/iTunes/iTunes\ Media/Music"
+  #config.vm.share_folder "music", "/music", "~/Music/iTunes/iTunes\ Media/Music"
 
   # trying to solve a problem with nameserver with http://askubuntu.com/questions/238040/how-do-i-fix-name-service-for-vagrant-client
   config.vm.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
