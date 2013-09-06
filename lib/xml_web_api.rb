@@ -133,15 +133,18 @@ class XMLWebAPI < Sinatra::Base
   get '/uc/outputs/0/settings/:vol' do
       vol = params[:vol]
       puts "vol is #{vol}"
-      playlist = Radiodan::Playlist.new(volume: vol)
-      @player.playlist = playlist
+#      playlist = Radiodan::Playlist.new(volume: vol)
+#      @player.playlist = playlist
 
       mute = "false"
       if(vol==0)
         mute ="true"
       end
+
+      `mpc volume "#{vol}"` #fixme
+
       b = "<response resource=\"uc/outputs/0/settings\">
-  <settings volume='#{@player.playlist.volume}' mute='#{mute}' />
+  <settings volume='#{vol}' mute='#{mute}' />
 </response>
 "
       response.headers['content-type'] = 'text/plain' #is this right?
