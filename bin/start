@@ -10,7 +10,8 @@ $:<< './lib'
 require "radiodan/playlist"
 require 'random_channel'
 require 'best_new_channel'
-require 'web_server'
+#require 'web_server'
+require 'xml_web_api'
 
 require 'local_config'
 require "rest-client"
@@ -78,7 +79,8 @@ EM.synchrony do
     builder.use      :best_new_channel, :filename => "#{root}/items"
   end
 
-  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false
+#  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false
+  Thin::Server.start XMLWebAPI.new(radio.player,root), '0.0.0.0', 3000, :signals => false
   radio.start
 
 end
