@@ -62,9 +62,9 @@ else
 
   File.open(File.join(root, 'items'), 'w') {|f| f.write(items_string) }
 
-  puts "updating mpc with new files"
+#  puts "updating mpc with new files"
 
-  `mpc update`
+#  `mpc update`
 
 
 end
