@@ -26,8 +26,6 @@ class BestNewChannel
   end
 
   def best_new_channel!
-    EM.defer \
-      proc {
         config = LocalConfig.new
         url = config.url_base.url
         req = RestClient.get(url)
@@ -68,10 +66,6 @@ class BestNewChannel
         logger.debug "changing to #{urls[0]}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: urls[0], volume: @player.playlist.volume)
         @player.playlist = playlist
-      },
-      proc {
-#        @player.trigger_event(:channel_changed)
-      }
   end
 end
 

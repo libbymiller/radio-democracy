@@ -5,8 +5,8 @@ GIT
     wiringpi2 (1.0.0)
 
 GIT
-  remote: https://github.com/libbymiller/radiodan.git
-  revision: f534e5d172d9dd63965af90dabbca1669fe7e912
+  remote: https://github.com/pixelblend/radiodan.git
+  revision: 385d6ff8db04c1e32af981335c2b9da7af1731c5
   specs:
     radiodan (0.0.4)
       active_support (~> 3.0.0)
@@ -15,6 +15,9 @@ GIT
       em-synchrony (~> 1.0.3)
       eventmachine (~> 1.0.3)
       i18n (~> 0.6.4)
+      sinatra (~> 1.4.2)
+      sinatra-synchrony (~> 0.4.1)
+      thin (~> 1.5.1)
 
 GEM
   remote: https://rubygems.org/
@@ -35,7 +38,8 @@ GEM
       em-socksify
       eventmachine (>= 1.0.0.beta.4)
       http_parser.rb (>= 0.5.3)
-    em-simple_telnet (0.0.14)
+    em-resolv-replace (1.1.3)
+    em-simple_telnet (0.0.15)
       eventmachine (>= 1.0.0)
     em-socksify (0.3.0)
       eventmachine (>= 1.0.0.beta.4)
@@ -61,6 +65,7 @@ GEM
       method_source (~> 0.8)
       slop (~> 3.4)
     rack (1.5.2)
+    rack-fiber_pool (0.9.3)
     rack-protection (1.5.0)
       rack
     rest-client (1.6.7)
@@ -70,6 +75,13 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    sinatra-synchrony (0.4.1)
+      em-http-request (~> 1.0)
+      em-resolv-replace (~> 1.1)
+      em-synchrony (~> 1.0.1)
+      eventmachine (~> 1.0.0)
+      rack-fiber_pool (~> 0.9)
+      sinatra (~> 1.0)
     slop (3.4.6)
     thin (1.5.1)
       daemons (>= 1.0.9)

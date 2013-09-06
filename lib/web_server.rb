@@ -2,6 +2,7 @@ require 'json'
 require 'cgi'
 require 'faye'
 require 'rest-client'
+require 'pp'
 
 $:<< './lib'
 require 'local_config'
@@ -107,15 +108,20 @@ class WebServer < Sinatra::Base
       config = LocalConfig.new
       url_base = config.url_base.url    
       url = "#{url_base}/down/"
-      req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
-
-      @player.trigger_event :best_new_channel
-
-      status req.code
-      if(req.code==201)
-        body {"OK"}      
-      else
-        body {"NOK"}
+#      pp @player
+      puts ",,#{@player.playlist.tracks[0].file}.."
+      begin
+        req = RestClient.post(url, :item => @player.playlist.tracks[0].file)    
+        @player.trigger_event :best_new_channel
+        status req.code
+        if(req.code==201)
+          body {"OK"}      
+        else
+          body {"NOK"}
+        end
+      rescue Exception=>e
+        puts "problem with 'down'"
+        pp e
       end
     end
   end

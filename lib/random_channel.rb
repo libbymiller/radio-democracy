@@ -14,8 +14,6 @@ class RandomChannel
   end
 
   def random_channel!
-    EM.defer \
-      proc {
         channels = []
         items = File.readlines(@filename)
         items.each do |item|
@@ -27,10 +25,6 @@ class RandomChannel
         logger.debug "changing to #{url}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: url, volume: @player.playlist.volume)
         @player.playlist = playlist
-      },
-      proc {
-#        @player.trigger_event(:channel_changed)
-      }
 
   end
 end
