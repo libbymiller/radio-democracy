@@ -40,12 +40,13 @@ class BestNewChannel
         end
         candidates = candidates.sort_by {|_key, value| value}.reverse
 
-
+        # remote things
         listenables = []
         candidates.each do |c|
           listenables.push(c[0])
         end
 
+        # local things
         local_candidates = {}
         File.readlines(@filename).each do |item|
           thing = item.split(" ")
@@ -53,7 +54,17 @@ class BestNewChannel
           listens = thing[1] ? thing[1].to_i : 0
           local_candidates[name] = listens
         end
-        local_candidates = local_candidates.sort_by {|_key, value| value} #not reverseed this time - least listened to
+        puts "local_candidates"
+        pp local_candidates
+
+        local_candidates = local_candidates.sort_by {rand} #else when everythng's 0, it's alphabetical
+        puts "local_candidates 2"
+        pp local_candidates
+
+        local_candidates = local_candidates.sort_by {|_key, value| value} #not reversed this time - least listened to
+
+        puts "remote_candidates"
+        pp listenables
 
         channels = []
         local_candidates.each do |c|
@@ -61,6 +72,7 @@ class BestNewChannel
         end
 
         urls = channels & listenables
+        puts "urls"
         pp urls
 
         logger.debug "changing to #{urls[0]}, #{@player.playlist.volume}..."
