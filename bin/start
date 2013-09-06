@@ -51,6 +51,8 @@ else
   items_string = ""
 
 # download the files themselves
+# hardcoded location 'podcasts' must match mpd's config /etc/mpd.conf (see Vagrantfile)
+
   to_download.each do |file_name, file|
     req = RestClient.get(file)
     File.open(File.join('podcasts', file_name ), 'wb') {|f| f.write(req.body) }
@@ -61,11 +63,6 @@ else
   end
 
   File.open(File.join(root, 'items'), 'w') {|f| f.write(items_string) }
-
-#  puts "updating mpc with new files"
-
-#  `mpc update`
-
 
 end
 
