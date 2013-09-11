@@ -2,85 +2,28 @@
 require 'rubygems'
 require 'bundler/setup'
 require 'radiodan'
-require 'sinatra/async'
-require 'thin'
-require 'pp'
 
-$:<< './lib'
-require "radiodan/playlist"
-require 'random_channel'
-require 'best_new_channel'
-#require 'web_server'
-require 'xml_web_api'
-
-require 'local_config'
-require "rest-client"
+$: << './lib'
+require 'download_bbc_radio'
+require 'web_app'
 
 root = File.join(File.dirname(__FILE__), '..')
 
-vol = 90
+@bbc_stations = DownloadBBCRadio.new
+@bbc_stations.run
 
-# download the list of files
+radio1 = @bbc_stations.stations['bbc_radio_1']
+radio4 = @bbc_stations.stations['bbc_radio_4']
 
-channels = []
+radios = Radiodan::Playlist.new(tracks: (radio1.tracks + radio4.tracks))
 
-if(File.exists?(File.join(root, 'items')))
-  puts "Got a starting file"
-
-  items = File.readlines(File.join(root, 'items'))
-  items.each do |item|
-     channels.push(item.split(" ")[0])
-  end
-  url = channels.sample
-
-else
-  puts "No starting file - downloading one"
-
-  config = LocalConfig.new
-  url = config.url_base.url
-  req = RestClient.get("#{url}/download")
-
-  to_download = {}
-  req.body.split("\n").each do |line|
-    line = line.chomp
-    arr = line.split(" ")
-    to_download[arr[0]]=arr[1] 
-  end
-
-  pp to_download
-
-  items_string = ""
-
-# download the files themselves
-# hardcoded location 'podcasts' must match mpd's config /etc/mpd.conf (see Vagrantfile)
-
-  to_download.each do |file_name, file|
-    req = RestClient.get(file)
-    File.open(File.join('podcasts', file_name ), 'wb') {|f| f.write(req.body) }
-    channels.push(file_name)
-    items_string << file_name
-    items_string << "\n"
-    sleep 1
-  end
-
-  File.open(File.join(root, 'items'), 'w') {|f| f.write(items_string) }
-
+radio = Radiodan.new do |builder|
+  builder.log      STDOUT
+  builder.adapter  :MPD, :host => 'localhost', :port => 6600
+  builder.use      :web_server, WebApp, :port => 3000
+  builder.use      :touch_file, :dir => File.join(root, 'tmp')
+  builder.use      :panic, :duration => 5, :playlist => radio1
+  builder.playlist radio4
 end
 
-channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
-
-EM.synchrony do
-
-  radio = Radiodan.new do |builder|
-    builder.log      STDOUT
-    builder.adapter  :MPD, :host => 'localhost', :port => 6600
-    builder.playlist channel
-    builder.use      :random_channel, :filename => "#{root}/items"
-    builder.use      :best_new_channel, :filename => "#{root}/items"
-  end
-
-#  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false
-  Thin::Server.start XMLWebAPI.new(radio.player,root), '0.0.0.0', 3000, :signals => false
-  radio.start
-
-end
+radio.start
