@@ -55,12 +55,17 @@ else
 # hardcoded location 'podcasts' must match mpd's config /etc/mpd.conf (see Vagrantfile)
 
   to_download.each do |file_name, file|
-    req = RestClient.get(file)
-    File.open(File.join('podcasts', file_name ), 'wb') {|f| f.write(req.body) }
-    channels.push(file_name)
-    items_string << file_name
-    items_string << "\n"
-    sleep 1
+    begin
+      req = RestClient.get(file)
+      File.open(File.join('podcasts', file_name ), 'wb') {|f| f.write(req.body) }
+      channels.push(file_name)
+      items_string << file_name
+      items_string << "\n"
+      sleep 1
+    rescue Exception=>e
+      pp e
+      puts "failed for file #{file}"
+    end
   end
 
   File.open(File.join(root, 'items'), 'w') {|f| f.write(items_string) }
