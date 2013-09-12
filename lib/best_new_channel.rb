@@ -28,15 +28,19 @@ class BestNewChannel
   def best_new_channel!
         config = LocalConfig.new
         url = config.url_base.url
-        req = RestClient.get(url)
         candidates = {}
-        req.body.split("\n").each do |item|
-          thing = item.split(" ")
-          name = thing[0]
-          up = thing[1] ? thing[1].to_i : 0
-          down = thing[2] ? thing[2].to_i : 0
-          diff = up - down
-          candidates[name]=diff
+        begin
+          req = RestClient.get(url)
+          req.body.split("\n").each do |item|
+            thing = item.split(" ")
+            name = thing[0]
+            up = thing[1] ? thing[1].to_i : 0
+            down = thing[2] ? thing[2].to_i : 0
+            diff = up - down
+            candidates[name]=diff
+          end
+        rescue Exception=>e
+          puts "barf with #{e} for #{url}"
         end
         candidates = candidates.sort_by {|_key, value| value}.reverse
 
@@ -74,6 +78,9 @@ class BestNewChannel
         urls = channels & listenables
         puts "urls"
         pp urls
+        if(urls.length==0) #only happens when no remote service
+          urls = channels
+        end
 
         logger.debug "changing to #{urls[0]}, #{@player.playlist.volume}..."
         playlist = Radiodan::Playlist.new(tracks: urls[0], volume: @player.playlist.volume)

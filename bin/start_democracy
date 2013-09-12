@@ -72,7 +72,35 @@ else
 
 end
 
-channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
+metadata = {}
+
+f = File.readlines("items_metadata")
+
+f.each do |line|
+  arr = line.split(" ")
+  file = arr[0]
+  channel = arr[1]
+  title = arr.slice(2,arr.length).join(" ").chomp
+  c = channel.gsub("_", " ")
+  metadata[file]={"title"=>title, "channel"=>c}
+  sleep 1
+end
+
+
+cc = channels.sample
+the_title = metadata[cc]["title"]
+the_channel = metadata[cc]["channel"]
+
+my_name = File.read("/etc/hostname").chomp
+
+a = Radiodan::Playlist.new( tracks: ("#{my_name}.wav"), volume: 100)
+b = Radiodan::Playlist.new( tracks: ("intro.wav"), volume: 100)
+c = Radiodan::Playlist.new( tracks: ("#{cc}_channel.wav"), volume: 100)
+d = Radiodan::Playlist.new( tracks: (cc), volume: vol)
+
+channel = Radiodan::Playlist.new( tracks: (a.tracks + b.tracks + c.tracks + d.tracks))
+
+#channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
 
 EM.synchrony do
 
@@ -85,7 +113,7 @@ EM.synchrony do
   end
 
 #  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false
-  Thin::Server.start XMLWebAPI.new(radio.player,root), '0.0.0.0', 3000, :signals => false
+  Thin::Server.start XMLWebAPI.new(radio.player,root), '0.0.0.0', 80, :signals => false
   radio.start
 
 end
