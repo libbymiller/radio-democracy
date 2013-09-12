@@ -7,24 +7,41 @@ class BestNewChannel
 
   def initialize(config)
     @filename = config[:filename]
+    @metadata = config[:metadata]
   end
 
   def call(player)
     @player = player
 
-    @player.register_event :best_new_channel do
-      best_new_channel!
-    end
     @player.register_event :play_state do |state|
       if(state == :stop)
         puts "state is stop"
-        best_new_channel!
+#        foo_new_channel!
       else
         puts "state is not stop"
       end
     end
+    @player.register_event :best_new_channel do
+      best_new_channel!
+#        foo_new_channel!
+    end
   end
+=begin
+  def foo_new_channel!
+        channels = []
+        items = File.readlines(@filename)
+        items.each do |item|
+          channels.push(item.split(" ")[0])
+        end
+        url = channels.sample
 
+        puts "url is #{url}..."
+        logger.debug "changing to #{url}, #{@player.playlist.volume}..."
+        playlist = Radiodan::Playlist.new(tracks: url, volume: @player.playlist.volume)
+        @player.playlist = playlist
+
+  end
+=end
   def best_new_channel!
         config = LocalConfig.new
         url = config.url_base.url
@@ -58,17 +75,17 @@ class BestNewChannel
           listens = thing[1] ? thing[1].to_i : 0
           local_candidates[name] = listens
         end
-        puts "local_candidates"
-        pp local_candidates
+#        puts "local_candidates"
+#        pp local_candidates
 
         local_candidates = local_candidates.sort_by {rand} #else when everythng's 0, it's alphabetical
-        puts "local_candidates 2"
-        pp local_candidates
+#        puts "local_candidates 2"
+#        pp local_candidates
 
         local_candidates = local_candidates.sort_by {|_key, value| value} #not reversed this time - least listened to
 
-        puts "remote_candidates"
-        pp listenables
+#        puts "remote_candidates"
+#        pp listenables
 
         channels = []
         local_candidates.each do |c|
@@ -76,15 +93,40 @@ class BestNewChannel
         end
 
         urls = channels & listenables
-        puts "urls"
-        pp urls
+#        puts "urls"
+#        pp urls
         if(urls.length==0) #only happens when no remote service
           urls = channels
         end
 
-        logger.debug "changing to #{urls[0]}, #{@player.playlist.volume}..."
-        playlist = Radiodan::Playlist.new(tracks: urls[0], volume: @player.playlist.volume)
-        @player.playlist = playlist
+        metadata = {}
+
+        f = File.readlines(@metadata)
+
+        f.each do |line|
+          arr = line.split(" ")
+          file = arr[0]
+          channel = arr[1]
+          title = arr.slice(2,arr.length).join(" ").chomp
+          c = channel.gsub("_", " ")
+          metadata[file]={"title"=>title, "channel"=>c}
+        end
+
+
+
+        logger.debug "changing to #{url}, #{@player.playlist.volume}..."
+        vol = @player.playlist.volume
+        @player.playlist = Radiodan::Playlist.new()
+
+        url = urls[0].chomp
+        begin
+         `espeak -v en "Most popular channel chosen: #{metadata[url]["channel"]}"`
+        rescue Exception=>e
+          puts "barf"
+          puts e
+        end
+
+        @player.playlist = Radiodan::Playlist.new(tracks: url, volume: vol)
   end
 end
 

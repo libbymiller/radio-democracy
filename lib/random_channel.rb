@@ -3,6 +3,7 @@ class RandomChannel
 
   def initialize(config)
     @filename = config[:filename]
+    @metadata = config[:metadata]
   end
 
   def call(player)
@@ -21,10 +22,30 @@ class RandomChannel
         end
         url = channels.sample
 
+        metadata = {}
+
+        f = File.readlines(@metadata)
+
+        f.each do |line|
+          arr = line.split(" ")
+          file = arr[0]
+          channel = arr[1]
+          title = arr.slice(2,arr.length).join(" ").chomp
+          c = channel.gsub("_", " ")
+          metadata[file]={"title"=>title, "channel"=>c}
+        end
+
+#        @player.playlist = Radiodan::Playlist.new()
+
+        begin
+         `espeak -v en "Random channel chosen: #{metadata[url]["channel"]}"`
+        rescue
+        end
+
         puts "url is #{url}"
         logger.debug "changing to #{url}, #{@player.playlist.volume}..."
-        playlist = Radiodan::Playlist.new(tracks: url, volume: @player.playlist.volume)
-        @player.playlist = playlist
+        vol = @player.playlist.volume
+        @player.playlist = Radiodan::Playlist.new(tracks: url, volume: vol)
 
   end
 end

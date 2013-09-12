@@ -4,7 +4,8 @@ group :development do
   gem 'pry'
 end
 
-gem 'radiodan', :git => 'https://github.com/pixelblend/radiodan.git'
+gem 'radiodan', :git => 'https://github.com/pixelblend/radiodan.git', :ref => '385d6ff'
+#gem 'radiodan', :git => 'https://github.com/pixelblend/radiodan.git', :ref => '0ed3ee24a4'
 
 group :web do
   gem 'thin'

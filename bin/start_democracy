@@ -91,16 +91,30 @@ cc = channels.sample
 the_title = metadata[cc]["title"]
 the_channel = metadata[cc]["channel"]
 
-my_name = File.read("/etc/hostname").chomp
+my_name = File.read("me").chomp
 
 a = Radiodan::Playlist.new( tracks: ("#{my_name}.wav"), volume: 100)
 b = Radiodan::Playlist.new( tracks: ("intro.wav"), volume: 100)
 c = Radiodan::Playlist.new( tracks: ("#{cc}_channel.wav"), volume: 100)
 d = Radiodan::Playlist.new( tracks: (cc), volume: vol)
 
-channel = Radiodan::Playlist.new( tracks: (a.tracks + b.tracks + c.tracks + d.tracks))
+#channel = Radiodan::Playlist.new( tracks: (a.tracks + b.tracks + c.tracks + d.tracks))
 
-#channel = Radiodan::Playlist.new tracks: channels.sample, volume: vol
+channel = Radiodan::Playlist.new tracks: cc, volume: vol
+
+begin
+  `espeak -v en "My name is #{my_name}"`
+rescue
+end
+begin
+  `espeak -v en "This is radio democracy"`
+rescue
+end
+
+begin
+  `espeak -v en "You are listening to #{the_channel}"`
+rescue
+end
 
 EM.synchrony do
 
@@ -108,8 +122,8 @@ EM.synchrony do
     builder.log      STDOUT
     builder.adapter  :MPD, :host => 'localhost', :port => 6600
     builder.playlist channel
-    builder.use      :random_channel, :filename => "#{root}/items"
-    builder.use      :best_new_channel, :filename => "#{root}/items"
+    builder.use      :random_channel, :filename => "#{root}/items", :metadata => "#{root}/items_metadata"
+    builder.use      :best_new_channel, :filename => "#{root}/items", :metadata => "#{root}/items_metadata"
   end
 
 #  Thin::Server.start WebServer.new(radio.player,root), '0.0.0.0', 3000, :signals => false

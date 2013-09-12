@@ -238,6 +238,13 @@ presentable-from=\"#{start}\" presentable-until=\"#{en}\">
       url = "#{url_base}/down/"
       req = RestClient.post(url, :item => @player.playlist.tracks[0].file)
 
+      @player.playlist = Radiodan::Playlist.new()
+
+      begin
+         `espeak -v en "Down vote registered"`
+      rescue
+      end
+
       @player.trigger_event :best_new_channel
 
       status req.code
@@ -255,6 +262,12 @@ presentable-from=\"#{start}\" presentable-until=\"#{en}\">
       response.headers["Access-Control-Allow-Methods"] = "GET, POST"
       response.headers["Access-Control-Allow-Headers"]="X-Requested-With, Origin"
       response.headers["Access-Control-Max-Age"]="86400"
+
+      begin
+         `espeak -v en "Up vote registered"`
+      rescue
+      end
+
       config = LocalConfig.new
       url_base = config.url_base.url    
       url = "#{url_base}/up/"

@@ -54,7 +54,7 @@ last_val2 = nil
 last_val3 = nil
 
 EM.run {
-  EM.add_periodic_timer(0.2) do
+  EM.add_periodic_timer(0.1) do
 #  EM.now_and_every(0.2) do
     button.update(io)
     if(button.value1!=last_val1)
@@ -65,13 +65,14 @@ EM.run {
            config = LocalConfig.new
            url = config.url_local.url
            puts "#{url}try"
-           sleep 1 #firing multiple times
+           #sleep 1
            begin
              req = RestClient.get("#{url}try", :a => "b")
              pp req
            rescue Exception=>e
              pp e
            end
+#           sleep 2 #firing multiple times
       end
     end
 
@@ -83,12 +84,14 @@ EM.run {
            config = LocalConfig.new
            url = config.url_local.url
            puts "#{url}down"
+#           sleep 1
            begin
              req = RestClient.get("#{url}down", :a => "b")
              pp req
            rescue Exception=>e
              pp e
            end
+           sleep 2 #firing multiple times
       end
     end
 
@@ -101,12 +104,14 @@ EM.run {
            config = LocalConfig.new
            url = config.url_local.url
            puts "#{url}up"
+           #sleep 1
            begin
              req = RestClient.get("#{url}up", :a => "b")
              pp req
            rescue Exception=>e
              pp e
            end
+           sleep 2 #firing multiple times
       end
     end
 
