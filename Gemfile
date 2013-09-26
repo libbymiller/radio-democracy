@@ -17,4 +17,7 @@ end
 
 gem 'settingslogic'
 
-gem 'wiringpi2', :git => 'https://github.com/libbymiller/WiringPi2-Ruby.git' 
+gem 'frankenpins', :git => 'gitlab:andrew.nicolaou/frankenpins.git'
+
+#gem 'wiringpi2', :git => 'https://github.com/libbymiller/WiringPi2-Ruby.git' 
+gem 'wiringpi2', :git => 'https://github.com/andrewn/WiringPi2-Ruby.git' 

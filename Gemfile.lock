@@ -1,6 +1,13 @@
 GIT
-  remote: https://github.com/libbymiller/WiringPi2-Ruby.git
-  revision: 94ea4b6cc6bbdc5a133c1678673c65c24d6a04d7
+  remote: gitlab:andrew.nicolaou/frankenpins.git
+  revision: d063b966b92406ab07c7eb4c1de490bc9b12ecec
+  specs:
+    frankenpins (0.0.0)
+      unobservable (>= 0.11.0)
+
+GIT
+  remote: https://github.com/andrewn/WiringPi2-Ruby.git
+  revision: 8e8b847e3f64b2cd1eaa299ffdff08e5146fdf85
   specs:
     wiringpi2 (1.0.0)
 
@@ -89,6 +96,7 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     tilt (1.4.1)
+    unobservable (0.11.0)
     websocket-driver (0.3.0)
     yajl-ruby (1.1.0)
 
@@ -98,6 +106,7 @@ PLATFORMS
 DEPENDENCIES
   async_sinatra (~> 1.1.0)
   faye
+  frankenpins!
   pry
   radiodan!
   rest-client
