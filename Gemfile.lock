@@ -1,15 +1,15 @@
 GIT
+  remote: git://github.com/Gadgetoid/WiringPi2-Ruby.git
+  revision: 2951e8efdf10cfad504a1e91df746692c0a1e12e
+  specs:
+    wiringpi2 (1.0.0)
+
+GIT
   remote: gitlab:andrew.nicolaou/frankenpins.git
   revision: d063b966b92406ab07c7eb4c1de490bc9b12ecec
   specs:
     frankenpins (0.0.0)
       unobservable (>= 0.11.0)
-
-GIT
-  remote: https://github.com/andrewn/WiringPi2-Ruby.git
-  revision: 8e8b847e3f64b2cd1eaa299ffdff08e5146fdf85
-  specs:
-    wiringpi2 (1.0.0)
 
 GIT
   remote: https://github.com/pixelblend/radiodan.git

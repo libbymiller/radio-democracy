@@ -5,7 +5,6 @@ group :development do
 end
 
 gem 'radiodan', :git => 'https://github.com/pixelblend/radiodan.git', :ref => '385d6ff'
-#gem 'radiodan', :git => 'https://github.com/pixelblend/radiodan.git', :ref => '0ed3ee24a4'
 
 group :web do
   gem 'thin'
@@ -18,6 +17,5 @@ end
 gem 'settingslogic'
 
 gem 'frankenpins', :git => 'gitlab:andrew.nicolaou/frankenpins.git'
+gem 'wiringpi2',   :github => 'Gadgetoid/WiringPi2-Ruby'
 
-#gem 'wiringpi2', :git => 'https://github.com/libbymiller/WiringPi2-Ruby.git' 
-gem 'wiringpi2', :git => 'https://github.com/andrewn/WiringPi2-Ruby.git' 
